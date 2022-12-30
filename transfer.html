@@ -4,7 +4,7 @@
         <meta charset="UTF-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Franklin 2.0 balance</title>
+        <title>Transfer</title>
         <script src="https://code.jquery.com/jquery-3.6.3.slim.min.js" integrity="sha256-ZwqZIVdD3iXNyGHbSYdsmWP//UBokj2FHAxKuSBKDSo=" crossorigin="anonymous"></script>
         <script src="https://cdn.ethers.io/lib/ethers-5.2.umd.min.js" type="application/javascript"></script>
         <script type="application/javascript">
@@ -21,19 +21,17 @@
                 "event Transfer(address indexed from, address indexed to, uint amount)"
             ];
 
-            const daiContract = new ethers.Contract(contractAddress, abi, provider);
-
-            const getAndSetBalance = () => {
-                const signer = provider.getSigner();
-                const account = signer.getAddress();
-                daiContract.balanceOf(account).then(x => {
-                    $("#balance").html(x.toString() / 1000000000000000000);
+            const send10Franklins = () => {
+                const contract = new ethers.Contract(contractAddress, abi, provider);
+                const signedContract = contract.connect(provider.getSigner());
+                const amount = ethers.utils.parseUnits("10", 18);
+                signedContract.transfer("0x15433DA387451F9dE4565280C85506CB71aF9376", amount).then(x => {
+                    console.log(x);
                 });
             }
         </script>
     </head>
     <body>
-        <button onclick="getAndSetBalance()" id="getBalanceButton">Get Balance</button>
-        <h1>You own <span id="balance">?</span> FN2</h1>
+        <button onclick="send10Franklins()">Send 10 Franklins 2.0</button>
     </body>
 </html>
