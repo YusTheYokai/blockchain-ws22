@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Franklin balance</title>
+        <script src="https://code.jquery.com/jquery-3.6.3.slim.min.js" integrity="sha256-ZwqZIVdD3iXNyGHbSYdsmWP//UBokj2FHAxKuSBKDSo=" crossorigin="anonymous"></script>
+        <script src="https://cdn.ethers.io/lib/ethers-5.2.umd.min.js" type="application/javascript"></script>
+        <script type="application/javascript">
+            const provider = new ethers.providers.Web3Provider(window.ethereum);
+            provider.send("eth_requestAccounts", []);
+
+            // You can also use an ENS name for the contract address
+            const daiAddress = "0xA47E2e3773662Fe97355eDcBee9717AFad636C7E";
+
+            // The ERC-20 Contract ABI, which is a common contract interface
+            // for tokens (this is the Human-Readable ABI format)
+            const daiAbi = [
+                // Some details about the token
+                "function name() view returns (string)",
+                "function symbol() view returns (string)",
+
+                // Get the account balance
+                "function balanceOf(address) view returns (uint)",
+
+                // Send some of your tokens to someone else
+                "function transfer(address to, uint amount)",
+
+                // An event triggered whenever anyone transfers to someone else
+                "event Transfer(address indexed from, address indexed to, uint amount)"
+            ];
+
+            // The Contract object
+            const daiContract = new ethers.Contract(daiAddress, daiAbi, provider);
+
+            const getAndSetBalance = () => {
+                const signer = provider.getSigner();
+                const account = signer.getAddress();
+                daiContract.balanceOf(account).then(x => {
+                    $("#balance").html(x.toString() / 1000000000000000000);
+                });
+            }
+        </script>
+    </head>
+    <body>
+        <button onclick="getAndSetBalance()" id="getBalanceButton">Get Balance</button>
+        <h1>You own <span id="balance">?</span> FNK</h1>
+    </body>
+</html>
