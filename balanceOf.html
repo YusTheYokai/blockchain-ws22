@@ -27,7 +27,7 @@
                 const signer = provider.getSigner();
                 const account = signer.getAddress();
                 daiContract.balanceOf(account).then(x => {
-                    $("#balance").html(x.toString() / 1000000000000000000);
+                    $("#balance").html(ethers.utils.formatUnits(x.toString(), 18));
                 });
             }
         </script>
